@@ -44,6 +44,18 @@ export default function Navbar() {
           <DarkModeToggle />
         </nav>
       </div>
+      <svg
+        className="block w-full h-6"
+        viewBox="0 0 1440 40"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M0 20 Q180 0 360 20 T720 20 T1080 20 T1440 20"
+          className="stroke-gray-400 dark:stroke-white"
+          strokeWidth="0.5"
+          fill="none"
+        />
+      </svg>
     </header>
   );
 }

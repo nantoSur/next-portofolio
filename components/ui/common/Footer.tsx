@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="text-center py-16">
+    <footer className="mt-10 text-center py-16 border-t border-gray-200 dark:border-gray-700 shadow-[0_-4px_6px_rgba(0,0,0,0.05)]">
       <h3 className="text-xl font-bold mb-2 dark:text-gray-100">
         Let&apos;s connect
       </h3>

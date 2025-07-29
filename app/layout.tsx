@@ -1,9 +1,6 @@
 import "./globals.css";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { ThemeProvider } from "next-themes";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import ScrollToTopButton from "./components/ScrollToTopButton";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -26,12 +23,7 @@ export default function RootLayout({
         className={`${plusJakarta.className} bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300`}
       >
         <ThemeProvider attribute="class" defaultTheme="light">
-          <Navbar />
-          <main className="max-w-3xl mx-auto px-10 mt-10 space-y-20">
-            {children}
-          </main>
-          <Footer />
-          <ScrollToTopButton />
+          {children}
         </ThemeProvider>
       </body>
     </html>
