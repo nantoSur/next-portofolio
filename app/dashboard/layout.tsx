@@ -1,8 +1,9 @@
 // app/dashboard/layout.tsx
 
 import { ReactNode } from "react";
-import Sidebar from "./components/sidebar"; // sesuaikan dengan path Sidebar kamu
+import Sidebar from "../../components/ui/dashboard/sidebar"; // sesuaikan dengan path Sidebar kamu
 import DashboardTopbar from "@/components/ui/dashboard/dashboard-topbar";
+import { Toaster } from "sonner";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
@@ -12,6 +13,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <DashboardTopbar />
         <main className="flex-1 p-6 overflow-y-auto bg-gray-100 dark:bg-gray-900">
           {children}
+          <Toaster richColors position="top-right" />
         </main>
       </div>
     </div>

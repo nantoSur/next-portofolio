@@ -30,6 +30,15 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </Link>
+
+      <Link href="/dashboard/user">
+        <Card className="hover:shadow-lg transition">
+          <CardHeader>
+            <CardTitle>Users</CardTitle>
+          </CardHeader>
+          <CardContent>Manage your users.</CardContent>
+        </Card>
+      </Link>
     </div>
   );
 }

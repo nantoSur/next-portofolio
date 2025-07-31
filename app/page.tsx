@@ -8,14 +8,17 @@ import ScrollToTopButton from "../components/ui/common/ScrollToTopButton";
 
 export default function Home() {
   return (
-    <main className="max-w-3xl mx-auto px-10 mt-10 space-y-20">
+    <>
       <Navbar />
-      <Hero />
-      <WorkSection />
-      <ExperienceSection />
-      <ContactSection />
+      <main className="max-w-3xl mx-auto px-10 mt-10 space-y-20">
+        <Hero />
+        <WorkSection />
+        <ExperienceSection />
+        <ContactSection />
+        <ScrollToTopButton />
+      </main>
+
       <Footer />
-      <ScrollToTopButton />
-    </main>
+    </>
   );
 }

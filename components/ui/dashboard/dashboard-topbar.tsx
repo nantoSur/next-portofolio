@@ -27,7 +27,7 @@ export default function DashboardTopbar() {
     <div className="w-full flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 shadow-sm border-b">
       {/* Search */}
       <div className="w-1/3">
-        <Input type="text" placeholder="Type to search..." className="w-full" />
+        {/* <Input type="text" placeholder="Type to search..." className="w-full" /> */}
       </div>
 
       {/* Right Side Icons */}

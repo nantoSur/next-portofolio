@@ -1,7 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutDashboard, Sparkles, Briefcase } from "lucide-react";
+import {
+  LayoutDashboard,
+  Sparkles,
+  Briefcase,
+  User2Icon,
+  User2,
+  UserPlus,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 
@@ -9,6 +16,7 @@ const menuItems = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { label: "Hero", icon: Sparkles, href: "/dashboard/hero" },
   { label: "Work", icon: Briefcase, href: "/dashboard/work" },
+  { label: "User", icon: UserPlus, href: "/dashboard/user" },
 ];
 
 export default function Sidebar() {
