@@ -48,6 +48,7 @@ export async function createUser(data: {
   password: string;
   level: "admin" | "user";
 }) {
+  // Validasi awal dengan Zod
   const parsed = UserSchema.safeParse(data);
   if (!parsed.success) {
     console.error("❌ Validasi gagal:", treeifyError(parsed.error));
@@ -57,6 +58,7 @@ export async function createUser(data: {
   const { name, email, password, level } = parsed.data;
 
   try {
+    // Cek apakah email sudah terdaftar
     const existingUser = await sql<User[]>`
       SELECT id FROM users WHERE email = ${email} LIMIT 1
     `;
@@ -64,8 +66,10 @@ export async function createUser(data: {
       throw new Error("Email sudah digunakan");
     }
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Insert data ke database
     const result = await sql<{ id: string }[]>`
       INSERT INTO users (name, email, password, level)
       VALUES (${name}, ${email}, ${hashedPassword}, ${level})
@@ -74,9 +78,13 @@ export async function createUser(data: {
 
     return { success: true, userId: result[0]?.id };
   } catch (err: unknown) {
-    const errorMessage =
-      err instanceof Error ? err.message : "Gagal menyimpan user ke database";
-    throw new Error(errorMessage);
+    // Jangan ubah pesan error kalau sudah berupa Error
+    if (err instanceof Error) {
+      throw err;
+    }
+
+    // Kalau error bukan instance of Error (misal: string atau objek), pakai fallback
+    throw new Error("Gagal menyimpan user ke database");
   }
 }
 
@@ -87,9 +95,9 @@ export async function deleteUser(id: string) {
     return { success: true };
   } catch (err: unknown) {
     const errorMessage =
-      err instanceof Error ? err.message : "Gagal menyimpan user ke database";
+      err instanceof Error ? err.message : "Gagal menghapus user dari database";
 
-    console.error("🔥 Gagal menyimpan user:", errorMessage);
+    console.error("🔥 Gagal menghapus user:", errorMessage);
     throw new Error(errorMessage);
   }
 }
@@ -105,14 +113,20 @@ export async function updateUser(
   }
 ) {
   try {
+    // 🔧 Hapus password jika kosong agar tidak ikut divalidasi
+    if (data.password === "") {
+      delete data.password;
+    }
+
     const parsed = UpdateUserSchema.safeParse(data);
     if (!parsed.success) {
-      throw parsed.error;
+      console.error("❌ Validasi gagal:", treeifyError(parsed.error));
+      throw new Error("Data user tidak valid");
     }
 
     const { name, email, password, level } = parsed.data;
 
-    if (password && password.length > 0) {
+    if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
       await sql`
         UPDATE users
@@ -128,7 +142,7 @@ export async function updateUser(
     }
 
     return { success: true };
-  } catch (err) {
+  } catch (err: unknown) {
     console.error("Update user error:", err);
     throw new Error("Gagal memperbarui user");
   }

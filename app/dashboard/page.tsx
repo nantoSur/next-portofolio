@@ -1,3 +1,4 @@
+//dashboard/page
 import {
   Card,
   CardContent,

@@ -1,7 +1,7 @@
 // app/dashboard/layout.tsx
 
 import { ReactNode } from "react";
-import Sidebar from "../../components/ui/dashboard/sidebar"; // sesuaikan dengan path Sidebar kamu
+import Sidebar from "../../components/ui/dashboard/sidebar";
 import DashboardTopbar from "@/components/ui/dashboard/dashboard-topbar";
 import { Toaster } from "sonner";
 

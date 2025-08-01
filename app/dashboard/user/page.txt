@@ -25,10 +25,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dashboard/dialog";
-import { z } from "zod";
-import { UserSchema } from "@/lib/validations/user-schema";
 
-type DBUser = {
+type User = {
   id: string;
   name: string;
   email: string;
@@ -37,17 +35,15 @@ type DBUser = {
   updated_at: string;
 };
 
-type UserForm = z.infer<typeof UserSchema> & { id?: string };
-
 export default function UserPage() {
-  const [users, setUsers] = useState<DBUser[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState("");
   const [limit, setLimit] = useState(5);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [openModal, setOpenModal] = useState(false);
-  const [editingUser, setEditingUser] = useState<UserForm | null>(null);
-  const [deletingUser, setDeletingUser] = useState<DBUser | null>(null);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [deletingUser, setDeletingUser] = useState<User | null>(null);
 
   async function fetchData() {
     try {
@@ -64,7 +60,13 @@ export default function UserPage() {
     fetchData();
   }, [search, limit, page]);
 
-  const handleUserSubmit = async (formData: UserForm) => {
+  const handleUserSubmit = async (formData: {
+    id?: string;
+    name: string;
+    email: string;
+    password: string;
+    level: "admin" | "user";
+  }) => {
     try {
       if (formData.id) {
         await updateUser(formData.id, formData);
@@ -77,9 +79,8 @@ export default function UserPage() {
       setOpenModal(false);
       setEditingUser(null);
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Gagal menyimpan data user";
-      toast.error(message);
+      console.error("❌ Gagal menyimpan user:", err);
+      toast.error("Gagal menyimpan data user");
     }
   };
 
@@ -158,8 +159,7 @@ export default function UserPage() {
                     variant="outline"
                     size="icon"
                     onClick={() => {
-                      const { id, name, email, level } = user;
-                      setEditingUser({ id, name, email, level, password: "" });
+                      setEditingUser(user);
                       setOpenModal(true);
                     }}
                   >

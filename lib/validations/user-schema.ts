@@ -1,29 +1,26 @@
 import { z } from "zod";
 
-export const UserSchema = z.object({
+// Schema dasar tanpa password
+const BaseUserSchema = z.object({
   name: z.string().min(1, { message: "Nama wajib diisi" }),
-  email: z.string().email({ message: "Format email tidak valid" }),
+  email: z.string().email({ message: "Email tidak valid" }),
+  level: z.enum(["admin", "user"]),
+});
+
+// Untuk validasi umum (dengan password wajib)
+export const UserSchema = BaseUserSchema.extend({
   password: z.string().min(6, { message: "Password minimal 6 karakter" }),
-  level: z.enum(["admin", "user"]),
 });
 
-// Untuk create user
-export const CreateUserSchema = z.object({
-  name: z.string().min(1, "Nama wajib diisi"),
-  email: z.string().email("Email tidak valid"),
-  password: z.string().min(6, "Password minimal 6 karakter"),
-  level: z.enum(["admin", "user"]),
-});
+// Untuk create user (password wajib)
+export const CreateUserSchema = UserSchema;
 
-// Untuk update user (password boleh kosong)
-export const UpdateUserSchema = z.object({
-  name: z.string().min(1, "Nama wajib diisi"),
-  email: z.string().email("Email tidak valid"),
+// Untuk update user (password opsional tapi kalau ada harus valid)
+export const UpdateUserSchema = BaseUserSchema.extend({
   password: z
     .string()
     .optional()
     .refine((val) => !val || val.length >= 6, {
       message: "Password minimal 6 karakter",
     }),
-  level: z.enum(["admin", "user"]),
 });

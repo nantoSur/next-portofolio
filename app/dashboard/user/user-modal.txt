@@ -13,12 +13,12 @@ import { useState, useEffect } from "react";
 import { UserSchema } from "@/lib/validations/user-schema";
 import { z } from "zod";
 
-type User = z.infer<typeof UserSchema> & { id?: string };
+type User = z.infer<typeof UserSchema>;
 
 type Props = {
   open: boolean;
   onClose: () => void;
-  onSubmit: (user: User) => Promise<void>; // ubah ke async
+  onSubmit: (user: User) => void;
   initialData?: User | null;
 };
 
@@ -47,39 +47,33 @@ export function UserModal({ open, onClose, onSubmit, initialData }: Props) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validasi client-side
     const schema = initialData
-      ? UserSchema.omit({ password: true })
+      ? UserSchema.omit({ password: true }) // saat edit, password tidak divalidasi
       : UserSchema;
 
     const result = schema.safeParse(form);
 
     if (!result.success) {
-      const zodErrors = result.error.flatten().fieldErrors;
       const fieldErrors: Partial<Record<keyof User, string>> = {};
+      const zodErrors = result.error.flatten().fieldErrors;
+
       Object.entries(zodErrors).forEach(([key, messages]) => {
-        if (messages?.length) fieldErrors[key as keyof User] = messages[0];
+        const typedKey = key as keyof User;
+        if (messages && messages.length > 0) {
+          fieldErrors[typedKey] = messages[0];
+        }
       });
+
       setErrors(fieldErrors);
       return;
     }
 
-    try {
-      setErrors({});
-      await onSubmit(form);
-      onClose();
-    } catch (err) {
-      // Tangkap error dari server-side
-      const message = err instanceof Error ? err.message : "Terjadi kesalahan";
-      if (message.includes("Email sudah digunakan")) {
-        setErrors((prev) => ({ ...prev, email: message }));
-      } else {
-        alert(message);
-      }
-    }
+    setErrors({});
+    onSubmit(form);
+    onClose();
   };
 
   return (
