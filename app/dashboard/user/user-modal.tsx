@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/dashboard/button";
 import { useState, useEffect } from "react";
 import { UserSchema } from "@/lib/validations/user-schema";
 import { z } from "zod";
+import { DuplicateEmailError } from "@/lib/errors";
+import { table } from "node:console";
 
 type User = z.infer<typeof UserSchema> & { id?: string };
 
@@ -47,10 +49,43 @@ export function UserModal({ open, onClose, onSubmit, initialData }: Props) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   // Validasi client-side
+  //   const schema = initialData
+  //     ? UserSchema.omit({ password: true })
+  //     : UserSchema;
+
+  //   const result = schema.safeParse(form);
+
+  //   if (!result.success) {
+  //     const zodErrors = result.error.flatten().fieldErrors;
+  //     const fieldErrors: Partial<Record<keyof User, string>> = {};
+  //     Object.entries(zodErrors).forEach(([key, messages]) => {
+  //       if (messages?.length) fieldErrors[key as keyof User] = messages[0];
+  //     });
+  //     setErrors(fieldErrors);
+  //     return;
+  //   }
+
+  //   try {
+  //     setErrors({});
+  //     await onSubmit(form); // ← kalau berhasil, baru lanjut
+  //     onClose(); // ← hanya ditutup kalau berhasil
+  //   } catch (err) {
+  //     const message = err instanceof Error ? err.message : "Terjadi kesalahan";
+  //     if (message.includes("Email sudah ada")) {
+  //       setErrors((prev) => ({ ...prev, email: message }));
+  //     } else {
+  //       alert(message);
+  //     }
+  //   }
+
+  // };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validasi client-side
     const schema = initialData
       ? UserSchema.omit({ password: true })
       : UserSchema;
@@ -69,18 +104,20 @@ export function UserModal({ open, onClose, onSubmit, initialData }: Props) {
 
     try {
       setErrors({});
-      await onSubmit(form);
-      onClose();
+      await onSubmit(form); // bisa lempar error jika email sudah digunakan
+      onClose();            // hanya dipanggil kalau tidak error
     } catch (err) {
-      // Tangkap error dari server-side
       const message = err instanceof Error ? err.message : "Terjadi kesalahan";
-      if (message.includes("Email sudah digunakan")) {
-        setErrors((prev) => ({ ...prev, email: message }));
+
+      if (err instanceof DuplicateEmailError || message.includes("Email sudah digunakan")) {
+        setErrors((prev) => ({ ...prev, email: "Email sudah digunakan" }));
       } else {
         alert(message);
       }
     }
+
   };
+
 
   return (
     <Dialog open={open} onOpenChange={onClose}>

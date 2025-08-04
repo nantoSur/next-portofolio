@@ -4,6 +4,7 @@ import { sql } from "@/lib/db";
 import type { User } from "@/lib/types/user";
 import bcrypt from "bcrypt";
 import { treeifyError } from "zod";
+import { DuplicateEmailError } from "@/lib/errors";
 
 import { UserSchema, UpdateUserSchema } from "@/lib/validations/user-schema";
 
@@ -63,7 +64,8 @@ export async function createUser(data: {
       SELECT id FROM users WHERE email = ${email} LIMIT 1
     `;
     if (existingUser.length > 0) {
-      throw new Error("Email sudah digunakan");
+      // throw new DuplicateEmailError(); // 💡 pakai error khusus
+      return { success: false, error: "EMAIL_EXISTS" }; // ✅
     }
 
     // Hash password
@@ -78,13 +80,12 @@ export async function createUser(data: {
 
     return { success: true, userId: result[0]?.id };
   } catch (err: unknown) {
-    // Jangan ubah pesan error kalau sudah berupa Error
-    if (err instanceof Error) {
-      throw err;
+    // Jangan log DuplicateEmailError karena sudah ditangani di UI
+    if (!(err instanceof DuplicateEmailError)) {
+      console.error("❌ Gagal menyimpan user:", err);
     }
 
-    // Kalau error bukan instance of Error (misal: string atau objek), pakai fallback
-    throw new Error("Gagal menyimpan user ke database");
+    throw err;
   }
 }
 

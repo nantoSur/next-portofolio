@@ -64,24 +64,58 @@ export default function UserPage() {
     fetchData();
   }, [search, limit, page]);
 
+  // const handleUserSubmit = async (formData: UserForm) => {
+  //   try {
+  //     if (formData.id) {
+  //       await updateUser(formData.id, formData);
+  //       toast.success("User berhasil diperbarui");
+  //     } else {
+  //       await createUser(formData);
+  //       toast.success("User berhasil dibuat");
+  //     }
+  //     fetchData();
+  //     setOpenModal(false);
+  //     setEditingUser(null);
+  //   } catch (err) {
+  //     const message =
+  //       err instanceof Error ? err.message : "Gagal menyimpan data user";
+  //     toast.error(message);
+  //   }
+  // };
+  // const handleUserSubmit = async (formData: UserForm) => {
+  //   if (formData.id) {
+  //     await updateUser(formData.id, formData);
+  //     toast.success("User berhasil diperbarui");
+  //   } else {
+  //     await createUser(formData); // jika gagal, lempar error ke modal
+  //     toast.success("User berhasil dibuat");
+  //   }
+
+  //   fetchData();
+  //   setOpenModal(false);
+  //   setEditingUser(null);
+  // };
   const handleUserSubmit = async (formData: UserForm) => {
-    try {
-      if (formData.id) {
-        await updateUser(formData.id, formData);
-        toast.success("User berhasil diperbarui");
-      } else {
-        await createUser(formData);
-        toast.success("User berhasil dibuat");
+    if (formData.id) {
+      await updateUser(formData.id, formData);
+      toast.success("User berhasil diperbarui");
+    } else {
+      const result = await createUser(formData);
+      if (!result.success) {
+        if (result.error === "EMAIL_EXISTS") {
+          throw new Error("Email sudah digunakan");
+        }
+        throw new Error("Gagal menyimpan user");
       }
-      fetchData();
-      setOpenModal(false);
-      setEditingUser(null);
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Gagal menyimpan data user";
-      toast.error(message);
+      toast.success("User berhasil dibuat");
     }
+
+    fetchData();
+    setOpenModal(false);
+    setEditingUser(null);
   };
+
+
 
   const handleDelete = async () => {
     if (!deletingUser) return;
