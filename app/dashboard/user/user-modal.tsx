@@ -13,7 +13,11 @@ import { useState, useEffect } from "react";
 import { UserSchema } from "@/lib/validations/user-schema";
 import { z } from "zod";
 import { DuplicateEmailError } from "@/lib/errors";
-import { table } from "node:console";
+import {
+  CreateUserSchema,
+  UpdateUserSchema,
+} from "@/lib/validations/user-schema";
+// import { table } from "node:console";
 
 type User = z.infer<typeof UserSchema> & { id?: string };
 
@@ -86,9 +90,20 @@ export function UserModal({ open, onClose, onSubmit, initialData }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const schema = initialData
-      ? UserSchema.omit({ password: true })
-      : UserSchema;
+    // const schema = UserSchema.refine(
+    //   (data) => {
+    //     if (initialData && data.password && data.password.length < 6) {
+    //       return false;
+    //     }
+    //     return true;
+    //   },
+    //   {
+    //     message: "Password minimal 6 karakter",
+    //     path: ["password"],
+    //   }
+    // );
+    // Gunakan schema yang sesuai
+    const schema = initialData ? UpdateUserSchema : CreateUserSchema;
 
     const result = schema.safeParse(form);
 
@@ -105,23 +120,28 @@ export function UserModal({ open, onClose, onSubmit, initialData }: Props) {
     try {
       setErrors({});
       await onSubmit(form); // bisa lempar error jika email sudah digunakan
-      onClose();            // hanya dipanggil kalau tidak error
+      onClose(); // hanya dipanggil kalau tidak error
     } catch (err) {
       const message = err instanceof Error ? err.message : "Terjadi kesalahan";
 
-      if (err instanceof DuplicateEmailError || message.includes("Email sudah digunakan")) {
+      if (
+        err instanceof DuplicateEmailError ||
+        message.includes("Email sudah digunakan")
+      ) {
         setErrors((prev) => ({ ...prev, email: "Email sudah digunakan" }));
       } else {
         alert(message);
       }
     }
-
   };
-
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent
+        className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
+        onInteractOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle>{initialData ? "Edit User" : "Add User"}</DialogTitle>
         </DialogHeader>
@@ -145,27 +165,34 @@ export function UserModal({ open, onClose, onSubmit, initialData }: Props) {
               <p className="text-sm text-red-500">{errors.email}</p>
             )}
           </div>
-          {!initialData && (
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                name="password"
-                type="password"
-                value={form.password}
-                onChange={handleChange}
-              />
-              {errors.password && (
-                <p className="text-sm text-red-500">{errors.password}</p>
+          {/* password */}
+          <div>
+            <Label htmlFor="password">
+              Password{" "}
+              {initialData && (
+                <span className="text-xs text-gray-500">
+                  (Kosongkan jika tidak diubah)
+                </span>
               )}
-            </div>
-          )}
+            </Label>
+            <Input
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+            />
+            {errors.password && (
+              <p className="text-sm text-red-500">{errors.password}</p>
+            )}
+          </div>
+
           <div>
             <Label htmlFor="level">Level</Label>
             <select
               name="level"
               value={form.level}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
+              className="w-full border rounded px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
             >
               <option value="admin">Admin</option>
               <option value="user">User</option>
@@ -174,10 +201,11 @@ export function UserModal({ open, onClose, onSubmit, initialData }: Props) {
               <p className="text-sm text-red-500">{errors.level}</p>
             )}
           </div>
-          <div className="pt-2">
-            <Button type="submit" className="w-full">
-              {initialData ? "Update" : "Create"}
+          <div className="pt-2 flex gap-2 justify-end">
+            <Button type="button" variant="outline" onClick={onClose}>
+              Batal
             </Button>
+            <Button type="submit">{initialData ? "Update" : "Create"}</Button>
           </div>
         </form>
       </DialogContent>

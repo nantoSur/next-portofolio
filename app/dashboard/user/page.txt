@@ -9,7 +9,13 @@ import {
 } from "@/components/ui/dashboard/select";
 import { Button } from "@/components/ui/dashboard/button";
 import { Input } from "@/components/ui/dashboard/input";
-import { PlusIcon, PencilIcon, TrashIcon } from "lucide-react";
+import {
+  PlusIcon,
+  PencilIcon,
+  TrashIcon,
+  ChevronUp,
+  ChevronDown,
+} from "lucide-react";
 import {
   getUsers,
   createUser,
@@ -25,8 +31,10 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dashboard/dialog";
+import { z } from "zod";
+import { UserSchema } from "@/lib/validations/user-schema";
 
-type User = {
+type DBUser = {
   id: string;
   name: string;
   email: string;
@@ -35,15 +43,21 @@ type User = {
   updated_at: string;
 };
 
+type UserForm = z.infer<typeof UserSchema> & { id?: string };
+
 export default function UserPage() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<DBUser[]>([]);
   const [search, setSearch] = useState("");
   const [limit, setLimit] = useState(5);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [openModal, setOpenModal] = useState(false);
-  const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [deletingUser, setDeletingUser] = useState<User | null>(null);
+  const [editingUser, setEditingUser] = useState<UserForm | null>(null);
+  const [deletingUser, setDeletingUser] = useState<DBUser | null>(null);
+  const [sortField, setSortField] = useState<
+    "name" | "email" | "level" | "created_at"
+  >("created_at");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   async function fetchData() {
     try {
@@ -60,28 +74,33 @@ export default function UserPage() {
     fetchData();
   }, [search, limit, page]);
 
-  const handleUserSubmit = async (formData: {
-    id?: string;
-    name: string;
-    email: string;
-    password: string;
-    level: "admin" | "user";
-  }) => {
-    try {
-      if (formData.id) {
-        await updateUser(formData.id, formData);
-        toast.success("User berhasil diperbarui");
-      } else {
-        await createUser(formData);
-        toast.success("User berhasil dibuat");
-      }
-      fetchData();
-      setOpenModal(false);
-      setEditingUser(null);
-    } catch (err) {
-      console.error("❌ Gagal menyimpan user:", err);
-      toast.error("Gagal menyimpan data user");
+  const handleSort = (field: "name" | "email" | "level" | "created_at") => {
+    if (sortField === field) {
+      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortField(field);
+      setSortOrder("asc");
     }
+  };
+
+  const handleUserSubmit = async (formData: UserForm) => {
+    if (formData.id) {
+      await updateUser(formData.id, formData);
+      toast.success("User berhasil diperbarui");
+    } else {
+      const result = await createUser(formData);
+      if (!result.success) {
+        if (result.error === "EMAIL_EXISTS") {
+          throw new Error("Email sudah digunakan");
+        }
+        throw new Error("Gagal menyimpan user");
+      }
+      toast.success("User berhasil dibuat");
+    }
+
+    fetchData();
+    setOpenModal(false);
+    setEditingUser(null);
   };
 
   const handleDelete = async () => {
@@ -98,10 +117,27 @@ export default function UserPage() {
     }
   };
 
+  const sortedUsers = [...users].sort((a, b) => {
+    let aVal: string | Date = a[sortField];
+    let bVal: string | Date = b[sortField];
+
+    if (sortField === "created_at") {
+      aVal = new Date(a.created_at);
+      bVal = new Date(b.created_at);
+    } else {
+      aVal = (aVal as string).toLowerCase();
+      bVal = (bVal as string).toLowerCase();
+    }
+
+    if (aVal < bVal) return sortOrder === "asc" ? -1 : 1;
+    if (aVal > bVal) return sortOrder === "asc" ? 1 : -1;
+    return 0;
+  });
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 items-center">
           <Input
             placeholder="Search name or email"
             value={search}
@@ -128,6 +164,19 @@ export default function UserPage() {
               <SelectItem value="20">20</SelectItem>
             </SelectContent>
           </Select>
+
+          <Button
+            variant="outline"
+            onClick={() => {
+              setSearch("");
+              setLimit(5);
+              setPage(1);
+              setSortField("created_at");
+              setSortOrder("desc");
+            }}
+          >
+            Clear Filter
+          </Button>
         </div>
 
         <Button onClick={() => setOpenModal(true)}>
@@ -141,25 +190,50 @@ export default function UserPage() {
           <thead className="bg-gray-100 dark:bg-gray-700">
             <tr>
               <th className="text-left px-4 py-2">No</th>
-              <th className="text-left px-4 py-2">Name</th>
-              <th className="text-left px-4 py-2">Email</th>
-              <th className="text-left px-4 py-2">Level</th>
+              {(["name", "email", "level", "created_at"] as const).map(
+                (field) => (
+                  <th
+                    key={field}
+                    className="text-left px-4 py-2 cursor-pointer select-none"
+                    onClick={() => handleSort(field)}
+                  >
+                    {field === "created_at"
+                      ? "Created At"
+                      : field.charAt(0).toUpperCase() + field.slice(1)}
+                    <span className="ml-1 inline-block">
+                      {sortField === field ? (
+                        sortOrder === "asc" ? (
+                          <ChevronUp className="inline w-3 h-3" />
+                        ) : (
+                          <ChevronDown className="inline w-3 h-3" />
+                        )
+                      ) : (
+                        <ChevronUp className="inline w-3 h-3 opacity-30 rotate-180" />
+                      )}
+                    </span>
+                  </th>
+                )
+              )}
               <th className="text-left px-4 py-2">Aksi</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
+            {sortedUsers.map((user, index) => (
               <tr key={user.id} className="border-t">
                 <td className="px-4 py-2">{(page - 1) * limit + index + 1}</td>
                 <td className="px-4 py-2">{user.name}</td>
                 <td className="px-4 py-2">{user.email}</td>
                 <td className="px-4 py-2 capitalize">{user.level}</td>
+                <td className="px-4 py-2">
+                  {new Date(user.created_at).toLocaleDateString()}
+                </td>
                 <td className="px-4 py-2 space-x-2">
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={() => {
-                      setEditingUser(user);
+                      const { id, name, email, level } = user;
+                      setEditingUser({ id, name, email, level, password: "" });
                       setOpenModal(true);
                     }}
                   >
@@ -213,7 +287,11 @@ export default function UserPage() {
           open={!!deletingUser}
           onOpenChange={() => setDeletingUser(null)}
         >
-          <DialogContent>
+          <DialogContent
+            className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
+            onInteractOutside={(e) => e.preventDefault()}
+            onEscapeKeyDown={(e) => e.preventDefault()}
+          >
             <DialogHeader>
               <DialogTitle>Hapus User</DialogTitle>
             </DialogHeader>
