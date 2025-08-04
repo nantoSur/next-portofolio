@@ -14,7 +14,7 @@ import clsx from "clsx";
 
 const menuItems = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-  { label: "Hero", icon: Sparkles, href: "/dashboard/hero" },
+  { label: "Hero", icon: Sparkles, href: "/dashboard/hero-section" },
   { label: "Work", icon: Briefcase, href: "/dashboard/work" },
   { label: "User", icon: UserPlus, href: "/dashboard/user" },
 ];
