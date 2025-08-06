@@ -62,6 +62,9 @@ const DialogFooter = ({ children }: React.PropsWithChildren) => (
 );
 DialogFooter.displayName = "DialogFooter";
 
+const DialogClose = DialogPrimitive.Close;
+DialogClose.displayName = DialogPrimitive.Close.displayName;
+
 export {
   Dialog,
   DialogTrigger,
@@ -69,4 +72,5 @@ export {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogClose,
 };

@@ -5,13 +5,16 @@ import ExperienceSection from "../components/ui/common/ExperienceSection";
 import ContactSection from "../components/ui/common/ContactSection";
 import Navbar from "../components/ui/common/Navbar";
 import ScrollToTopButton from "../components/ui/common/ScrollToTopButton";
+import { getHeroSection } from "@/lib/actions/hero-section/get";
 
-export default function Home() {
+export default async function Home() {
+  const hero = await getHeroSection();
+
   return (
     <>
       <Navbar />
       <main className="max-w-3xl mx-auto px-10 mt-10 space-y-20">
-        <Hero />
+        {hero && <Hero data={hero} />}
         <WorkSection />
         <ExperienceSection />
         <ContactSection />

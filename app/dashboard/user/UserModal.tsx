@@ -17,7 +17,6 @@ import {
   CreateUserSchema,
   UpdateUserSchema,
 } from "@/lib/validations/user-schema";
-// import { table } from "node:console";
 
 type User = z.infer<typeof UserSchema> & { id?: string };
 

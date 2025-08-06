@@ -22,7 +22,7 @@ import {
   deleteUser,
   updateUser,
 } from "@/lib/actions/user-actions";
-import { UserModal } from "./user-modal";
+import { UserModal } from "./UserModal";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -136,7 +136,9 @@ export default function UserPage() {
 
   return (
     <div className="p-6 space-y-6">
-      <div><h1 className="text-xl font-semibold">Data User</h1></div>
+      <div>
+        <h1 className="text-xl font-semibold">Data User</h1>
+      </div>
       <div className="flex justify-between items-center">
         <div className="flex flex-wrap gap-2 items-center">
           <Input

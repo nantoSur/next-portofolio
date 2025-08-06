@@ -19,7 +19,7 @@ async function createTableHeroSection() {
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         title TEXT NOT NULL,
         highlight TEXT NOT NULL,
-        subtitle TEXT NOT NULL,
+     
         description TEXT,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
@@ -33,7 +33,7 @@ async function createTableHeroSection() {
       VALUES (
         'Hi, I am John Doe',
         'VoIP Specialist',
-        'Helping businesses migrate to modern IP PBX systems',
+      
         'Experienced in Yeastar, FreePBX, Proxmox, and managing both on-prem and cloud PBX systems.'
       )
       ON CONFLICT DO NOTHING;
