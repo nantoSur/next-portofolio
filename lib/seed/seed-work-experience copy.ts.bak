@@ -1,0 +1,150 @@
+import dotenv from "dotenv";
+dotenv.config();
+
+import postgres from "postgres";
+
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
+
+// Tipe untuk skill dan work experience
+type Skill = {
+  id: string;
+  name: string;
+};
+
+type WorkExperienceInput = {
+  company: string;
+  logo_url: string;
+  role: string;
+  start_date: string;
+  end_date?: string;
+  location: string;
+  summary: string[];
+  achievements: string[];
+  skills: string[]; // nama skill, nanti dihubungkan ke id
+};
+
+async function createTableWorkExperience() {
+  try {
+    // Cek koneksi DB
+    const result = await sql`SELECT NOW()`;
+    console.log("✅ DB connected at", result[0].now);
+
+    // Tabel utama
+    await sql`
+      CREATE TABLE IF NOT EXISTS work_experiences (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        company TEXT NOT NULL,
+        logo_url TEXT,
+        role TEXT NOT NULL,
+        start_date DATE NOT NULL,
+        end_date DATE,
+        location TEXT NOT NULL,
+        summary TEXT[] DEFAULT '{}',
+        achievements TEXT[] DEFAULT '{}',
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      );
+    `;
+
+    // Tabel relasi many-to-many ke skills
+    await sql`
+      CREATE TABLE IF NOT EXISTS work_experience_skills (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        work_experience_id UUID REFERENCES work_experiences(id) ON DELETE CASCADE,
+        skill_id UUID REFERENCES skills(id) ON DELETE CASCADE,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+    `;
+
+    console.log("✅ Tables created");
+
+    // Ambil semua skill dari tabel skills
+    const skillsInDb: Skill[] = await sql`SELECT id, name FROM skills`;
+
+    // Data dummy 3 work experiences
+    const workExperiences: WorkExperienceInput[] = [
+      {
+        company: "TechCorp Indonesia",
+        logo_url:
+          "https://your-supabase-url/storage/v1/object/public/logos/techcorp.png",
+        role: "Backend Developer",
+        start_date: "2020-01-01",
+        end_date: "2021-12-31",
+        location: "Jakarta, Indonesia",
+        summary: ["Built RESTful APIs", "Maintained PostgreSQL database"],
+        achievements: [
+          "Reduced API response time by 40%",
+          "Migrated legacy system",
+        ],
+        skills: ["Node.js", "PostgreSQL", "Docker"],
+      },
+      {
+        company: "VoIP Solutions",
+        logo_url:
+          "https://your-supabase-url/storage/v1/object/public/logos/voip.png",
+        role: "VoIP Engineer",
+        start_date: "2022-01-01",
+        end_date: "2023-06-30",
+        location: "Remote",
+        summary: ["Maintained FreePBX system", "Handled cloud PBX"],
+        achievements: ["Handled 99.9% uptime", "Trained new VoIP admins"],
+        skills: ["FreePBX", "Yeastar", "Networking"],
+      },
+      {
+        company: "DevPro Systems",
+        logo_url:
+          "https://your-supabase-url/storage/v1/object/public/logos/devpro.png",
+        role: "Full Stack Developer",
+        start_date: "2023-07-01",
+        location: "Bandung, Indonesia",
+        summary: ["Built internal dashboard", "Integrated third-party APIs"],
+        achievements: ["Reduced manual work by 60%", "Improved UI/UX"],
+        skills: ["React", "TypeScript", "Tailwind CSS", "Node.js"],
+      },
+    ];
+
+    for (const exp of workExperiences) {
+      // Insert work_experience
+      const [inserted] = await sql`
+        INSERT INTO work_experiences (
+          company, logo_url, role, start_date, end_date,
+          location, summary, achievements
+        )
+        VALUES (
+          ${exp.company}, ${exp.logo_url}, ${exp.role},
+          ${exp.start_date}, ${exp.end_date ?? null},
+          ${exp.location}, ${sql.array(exp.summary)},
+          ${sql.array(exp.achievements)}
+        )
+        RETURNING id;
+      `;
+
+      const workExperienceId = inserted.id as string;
+
+      // Hubungkan ke skill
+      const matchedSkills = skillsInDb.filter((s) =>
+        exp.skills.includes(s.name)
+      );
+
+      for (const skill of matchedSkills) {
+        await sql`
+          INSERT INTO work_experience_skills (
+            work_experience_id,
+            skill_id
+          ) VALUES (
+            ${workExperienceId}, ${skill.id}
+          );
+        `;
+      }
+
+      console.log(`✅ Work experience "${exp.company}" inserted`);
+    }
+
+    process.exit(0);
+  } catch (error) {
+    console.error("❌ Error:", error);
+    process.exit(1);
+  }
+}
+
+createTableWorkExperience();
