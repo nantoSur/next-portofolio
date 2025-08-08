@@ -51,8 +51,8 @@ export default function WorkExperiencePage() {
   const [editing, setEditing] = useState<WorkExperience | null>(null);
   const [viewing, setViewing] = useState<WorkExperience | null>(null);
   const [deleting, setDeleting] = useState<WorkExperience | null>(null);
-  const [sortField, setSortField] = useState<"company" | "role" | "start_date">(
-    "start_date"
+  const [sortField, setSortField] = useState<"company" | "role" | "startDate">(
+    "startDate"
   );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
@@ -98,7 +98,7 @@ export default function WorkExperiencePage() {
     const aVal = a[sortField];
     const bVal = b[sortField];
 
-    if (sortField === "start_date") {
+    if (sortField === "startDate") {
       return sortOrder === "asc"
         ? new Date(aVal ?? "").getTime() - new Date(bVal ?? "").getTime()
         : new Date(bVal ?? "").getTime() - new Date(aVal ?? "").getTime();
@@ -181,7 +181,7 @@ export default function WorkExperiencePage() {
               setSearch("");
               setLimit(5);
               setPage(1);
-              setSortField("start_date");
+              setSortField("startDate");
               setSortOrder("desc");
             }}
           >
@@ -231,7 +231,7 @@ export default function WorkExperiencePage() {
                 <td className="px-4 py-2">{item.company}</td>
                 <td className="px-4 py-2">{item.role}</td>
                 <td className="px-4 py-2">
-                  {new Date(item.start_date).toLocaleDateString()}
+                  {new Date(item.startDate).toLocaleDateString()}
                 </td>
                 <td className="px-4 py-2 space-x-2">
                   <Button
@@ -344,12 +344,12 @@ export default function WorkExperiencePage() {
               </div>
               <div>
                 <strong>Start Date:</strong>{" "}
-                {new Date(viewing.start_date).toLocaleDateString()}
+                {new Date(viewing.startDate).toLocaleDateString()}
               </div>
               <div>
                 <strong>End Date:</strong>{" "}
-                {viewing.end_date
-                  ? new Date(viewing.end_date).toLocaleDateString()
+                {viewing.endDate
+                  ? new Date(viewing.endDate).toLocaleDateString()
                   : "Present"}
               </div>
               <div>
