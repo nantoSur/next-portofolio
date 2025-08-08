@@ -103,12 +103,10 @@ export async function createWorkExperience(data: WorkExperienceForm) {
     //   }
     // 🔗 Insert relasi skill jika ada
     if (safeSkillIds.length > 0) {
-      // Use unnest with the sql.array helper, which handles the casting.
-      // The database will now receive a list of individual UUIDs.
       await sql`
-    INSERT INTO work_experience_skills (work_experience_id, skill_id)
-    SELECT ${workExperienceId}, unnest(${sql.array(safeSkillIds)})
-  `;
+      INSERT INTO work_experience_skills (work_experience_id, skill_id)
+      SELECT ${workExperienceId}, unnest(${sql.array(safeSkillIds)})::uuid
+    `;
     }
 
     console.log("✅ Work experience berhasil disimpan.");
