@@ -1,12 +1,8 @@
+// lib/validations/skill-schema.ts
 import { z } from "zod";
 
-// ✅ Validasi untuk CreateSkillInput
-export const createSkillSchema = z.object({
-  name: z.string().min(2, "Skill name is required"),
-  category: z.string().min(2, "Category is required"),
+export const SkillSchema = z.object({
+  name: z.string().min(1, "Nama skill wajib diisi"),
 });
 
-// ✅ Validasi untuk UpdateSkillInput
-export const updateSkillSchema = createSkillSchema.extend({
-  id: z.string().uuid("Invalid skill ID"),
-});
+export type Skill = z.infer<typeof SkillSchema>;

@@ -1,32 +1,23 @@
-import type { Skill } from "./skill";
-
-export type WorkExperience = {
+export interface WorkExperience {
   id: string;
-  role: string;
-  company: string;
-  location?: string | null;
-  logoUrl?: string | null;
-  startDate: string; // format: YYYY-MM-DD
-  endDate?: string | null;
-  summary: string[];
-  achievements: string[];
-  skills: Skill[]; // relasi
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type CreateWorkExperienceInput = {
   role: string;
   company: string;
   location?: string;
-  logoUrl?: string;
+  logoUrl?: string; // ✅ camelCase
   startDate: string;
   endDate?: string;
-  summary: string[];
-  achievements: string[];
-  skillIds: string[]; // array of selected skill.id
-};
+  summary?: string[];
+  achievements?: string[];
+  skills: {
+    id: string;
+    name: string;
+  }[];
+  createdAt?: string;
+  updatedAt?: string;
+}
 
-export type UpdateWorkExperienceInput = CreateWorkExperienceInput & {
-  id: string;
-};
+export interface WorkExperienceForm extends Partial<WorkExperience> {
+  summary: string[];
+  achievements?: string[];
+  skillIds: string[]; // ✅ relasi many-to-many dengan skills
+}

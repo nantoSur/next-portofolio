@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Select,
   SelectContent,
@@ -59,7 +59,7 @@ export default function UserPage() {
   >("created_at");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  async function fetchData() {
+  const fetchData = useCallback(async () => {
     try {
       const res = await getUsers({ search, limit, page });
       setUsers(res.data ?? []);
@@ -68,11 +68,11 @@ export default function UserPage() {
       console.error("Failed to fetch users:", err);
       toast.error("Gagal mengambil data user");
     }
-  }
+  }, [search, limit, page]);
 
   useEffect(() => {
     fetchData();
-  }, [search, limit, page]);
+  }, [fetchData]);
 
   const handleSort = (field: "name" | "email" | "level" | "created_at") => {
     if (sortField === field) {

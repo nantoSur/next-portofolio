@@ -1,19 +1,21 @@
+// /lib/validations/work-experience-schema.ts
 import { z } from "zod";
 
-// ✅ Validasi untuk CreateWorkExperienceInput
-export const createWorkExperienceSchema = z.object({
-  role: z.string().min(2, "Role is required"),
-  company: z.string().min(2, "Company name is required"),
+export const WorkExperienceSchema = z.object({
+  id: z.string().uuid().optional(), // optional for create, required for update
+  role: z.string().min(1, { message: "Role wajib diisi" }),
+  company: z.string().min(1, { message: "Company wajib diisi" }),
   location: z.string().optional(),
-  logoUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
-  startDate: z.string().min(1, "Start date is required"), // format: YYYY-MM-DD
+  logoUrl: z
+    .string()
+    .url({ message: "Logo harus berupa URL yang valid" })
+    .optional()
+    .or(z.literal("")),
+  startDate: z.string().min(1, { message: "Tanggal mulai wajib diisi" }),
   endDate: z.string().optional().or(z.literal("")),
-  summary: z.array(z.string()).optional().default([]),
-  achievements: z.array(z.string()).optional().default([]),
-  skillIds: z.array(z.string()).min(1, "Please select at least one skill"),
+  summary: z.array(z.string()).optional(),
+  achievements: z.array(z.string()).optional(),
+  skillIds: z.array(z.string().uuid()).optional(), // relasi many-to-many ke skills
 });
 
-// ✅ Validasi untuk UpdateWorkExperienceInput
-export const updateWorkExperienceSchema = createWorkExperienceSchema.extend({
-  id: z.string().uuid("Invalid work experience ID"),
-});
+export type WorkExperienceForm = z.infer<typeof WorkExperienceSchema>;
