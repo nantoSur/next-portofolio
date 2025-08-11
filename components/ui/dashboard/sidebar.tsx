@@ -8,8 +8,8 @@ import clsx from "clsx";
 const menuItems = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { label: "Hero", icon: Sparkles, href: "/dashboard/hero-section" },
-  { label: "Works", icon: Briefcase, href: "/dashboard/work-experience" },
   { label: "Skills", icon: Briefcase, href: "/dashboard/skills" },
+  { label: "Works", icon: Briefcase, href: "/dashboard/work-experience" },
   { label: "Users", icon: UserPlus, href: "/dashboard/users" },
 ];
 

@@ -80,7 +80,7 @@ export default function HeroSectionPage() {
             <div className="sm:col-span-2">
               <p className="text-gray-500">Update At</p>
               <p className="text-sm text-gray-600">
-                {new Date(data.updated_at).toLocaleString()}
+                {new Date(data.updated_at).toLocaleString("id")}
               </p>
             </div>
           </div>

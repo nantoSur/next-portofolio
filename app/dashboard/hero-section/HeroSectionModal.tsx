@@ -69,42 +69,102 @@ export function HeroSectionModal({
   };
 
   return (
+    // <Dialog open={open} onOpenChange={() => {}} modal={true}>
+    //   <DialogContent className="sm:max-w-lg">
+    //     <DialogHeader>
+    //       <DialogTitle>Edit Hero Section</DialogTitle>
+    //     </DialogHeader>
+
+    //     <form onSubmit={handleSubmit} className="space-y-4">
+    //       <div>
+    //         <label className="text-sm font-medium">Title</label>
+    //         <input
+    //           name="title"
+    //           value={form.title}
+    //           onChange={handleChange}
+    //           className="w-full border rounded px-3 py-2 text-sm"
+    //           required
+    //         />
+    //       </div>
+
+    //       <div>
+    //         <label className="text-sm font-medium">Highlight</label>
+    //         <input
+    //           name="highlight"
+    //           value={form.highlight}
+    //           onChange={handleChange}
+    //           className="w-full border rounded px-3 py-2 text-sm"
+    //           required
+    //         />
+    //       </div>
+
+    //       <div>
+    //         <label className="text-sm font-medium">Description</label>
+    //         <textarea
+    //           name="description"
+    //           value={form.description}
+    //           onChange={handleChange}
+    //           className="w-full border rounded px-3 py-2 text-sm"
+    //           rows={4}
+    //           required
+    //         />
+    //       </div>
+
+    //       <div className="flex justify-end gap-2 pt-4">
+    //         <DialogClose asChild>
+    //           <Button type="button" variant="outline" onClick={onClose}>
+    //             Batal
+    //           </Button>
+    //         </DialogClose>
+    //         <Button type="submit" disabled={loading}>
+    //           {loading ? "Menyimpan..." : "Simpan"}
+    //         </Button>
+    //       </div>
+    //     </form>
+    //   </DialogContent>
+    // </Dialog>
     <Dialog open={open} onOpenChange={() => {}} modal={true}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-4xl  w-full max-w-full  bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-8">
         <DialogHeader>
           <DialogTitle>Edit Hero Section</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="text-sm font-medium">Title</label>
+            <label className="text-sm font-medium dark:text-gray-300">
+              Title
+            </label>
             <input
               name="title"
               value={form.title}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2 text-sm"
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               required
             />
           </div>
 
           <div>
-            <label className="text-sm font-medium">Highlight</label>
+            <label className="text-sm font-medium dark:text-gray-300">
+              Highlight
+            </label>
             <input
               name="highlight"
               value={form.highlight}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2 text-sm"
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               required
             />
           </div>
 
           <div>
-            <label className="text-sm font-medium">Description</label>
+            <label className="text-sm font-medium dark:text-gray-300">
+              Description
+            </label>
             <textarea
               name="description"
               value={form.description}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2 text-sm"
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               rows={4}
               required
             />

@@ -1,3 +1,5 @@
+//lib/types/work-experience
+
 export interface WorkExperience {
   id: string;
   role: string;

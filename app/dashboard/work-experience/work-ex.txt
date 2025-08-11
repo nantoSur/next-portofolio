@@ -1,3 +1,4 @@
+// page work
 "use client";
 
 import {
@@ -9,15 +10,17 @@ import {
 import { Input } from "@/components/ui/dashboard/input";
 import { Label } from "@/components/ui/dashboard/label";
 import { Button } from "@/components/ui/dashboard/button";
+
 import { SkillTransferSelect } from "@/components/ui/dashboard/shared/SkillTransferSelect";
 
 import { useState, useEffect } from "react";
 import ListInput from "@/components/ui/dashboard/form/ListInput";
+
 import { WorkExperienceSchema } from "@/lib/validations/work-experience-schema";
 import type { WorkExperienceForm } from "@/lib/types/work-experience";
 import type { Skill } from "@/lib/types/skill";
-import { uploadLogo } from "@/lib/upload-logo"; // server action upload logo
-import Image from "next/image";
+
+// Props dari modal
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -26,6 +29,7 @@ interface Props {
   allSkills: Skill[];
 }
 
+// Komponen Modal
 export function WorkExperienceModal({
   open,
   onClose,
@@ -42,23 +46,18 @@ export function WorkExperienceModal({
     startDate: "",
     endDate: "",
     summary: [],
-    achievements: [],
+    achievements: [] as string[],
     skillIds: [],
   });
 
   const [errors, setErrors] = useState<
     Partial<Record<keyof WorkExperienceForm, string>>
   >({});
-  const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
 
+  // Reset form saat initialData berubah atau modal dibuka
   useEffect(() => {
     if (initialData) {
-      setForm({
-        ...initialData,
-        startDate: formatDateToInput(initialData.startDate),
-        endDate: formatDateToInput(initialData.endDate),
-      });
+      setForm(initialData);
     } else {
       setForm({
         id: undefined,
@@ -74,21 +73,22 @@ export function WorkExperienceModal({
       });
     }
     setErrors({});
-    setLogoFile(null);
   }, [initialData, open]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSkillChange = (ids: string[]) => {
-    setForm({ ...form, skillIds: ids });
+  const handleTextareaChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+    field: "summary" | "achievements"
+  ) => {
+    const lines = e.target.value.split("\n").filter(Boolean);
+    setForm({ ...form, [field]: lines });
   };
 
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setLogoFile(e.target.files[0]);
-    }
+  const handleSkillChange = (ids: string[]) => {
+    setForm({ ...form, skillIds: ids });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -109,34 +109,13 @@ export function WorkExperienceModal({
 
     try {
       setErrors({});
-
-      let logoUrl = form.logoUrl;
-      if (logoFile) {
-        setUploading(true);
-        logoUrl = await uploadLogo(logoFile); // server action
-      }
-
-      await onSubmit({ ...form, logoUrl });
+      await onSubmit(form); // <- ini akan panggil createWorkExperience atau updateWorkExperience
       onClose();
     } catch (err) {
       const message = err instanceof Error ? err.message : "Terjadi kesalahan";
       alert(message);
-    } finally {
-      setUploading(false);
     }
   };
-
-  // Helper untuk format date ke input date (YYYY-MM-DD)
-  function formatDateToInput(dateString?: string | null) {
-    if (!dateString) return "";
-    const d = new Date(dateString);
-    // pastikan valid date
-    if (isNaN(d.getTime())) return "";
-
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${d.getFullYear()}-${month}-${day}`;
-  }
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -182,17 +161,12 @@ export function WorkExperienceModal({
           </div>
 
           <div>
-            <Label htmlFor="logo">Company Logo</Label>
-            <Input type="file" accept="image/*" onChange={handleLogoChange} />
-            {form.logoUrl && (
-              <Image
-                src={form.logoUrl}
-                alt="Logo"
-                className="mt-2 h-12 object-contain"
-                width={96}
-                height={96}
-              />
-            )}
+            <Label htmlFor="logo_url">Logo URL</Label>
+            <Input
+              name="logoUrl"
+              value={form.logoUrl}
+              onChange={handleChange}
+            />
             {errors.logoUrl && (
               <p className="text-sm text-red-500">{errors.logoUrl}</p>
             )}
@@ -203,7 +177,7 @@ export function WorkExperienceModal({
             <Input
               name="startDate"
               type="date"
-              value={formatDateToInput(form.startDate)}
+              value={form.startDate}
               onChange={handleChange}
             />
             {errors.startDate && (
@@ -216,7 +190,7 @@ export function WorkExperienceModal({
             <Input
               name="endDate"
               type="date"
-              value={formatDateToInput(form.endDate) || ""}
+              value={form.endDate || ""}
               onChange={handleChange}
             />
           </div>
@@ -241,13 +215,14 @@ export function WorkExperienceModal({
 
           <div>
             <Label>Skills</Label>
+
             <SkillTransferSelect
               options={allSkills.map((s) => ({
                 label: s.name,
                 value: s.id,
               }))}
               selected={form.skillIds}
-              onChange={handleSkillChange}
+              onChange={(newIds) => setForm({ ...form, skillIds: newIds })}
             />
           </div>
 
@@ -255,9 +230,7 @@ export function WorkExperienceModal({
             <Button type="button" variant="outline" onClick={onClose}>
               Batal
             </Button>
-            <Button type="submit" disabled={uploading}>
-              {uploading ? "Uploading..." : initialData ? "Update" : "Create"}
-            </Button>
+            <Button type="submit">{initialData ? "Update" : "Create"}</Button>
           </div>
         </form>
       </DialogContent>

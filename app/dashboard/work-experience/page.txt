@@ -1,4 +1,4 @@
-"use client";
+app/dashboard/work-experience/page.tsx"use client";
 
 import { getSkills } from "@/lib/actions/skills"; // add
 import { Skill } from "@/lib/types/skill"; //add
@@ -39,7 +39,6 @@ import {
   type WorkExperienceForm,
   type WorkExperience,
 } from "@/lib/types/work-experience";
-import Image from "next/image";
 
 export default function WorkExperiencePage() {
   const [allSkills, setAllSkills] = useState<Skill[]>([]);
@@ -143,16 +142,6 @@ export default function WorkExperiencePage() {
     }
   };
 
-  function formatDateDMY(dateString?: string) {
-    if (!dateString) return "-";
-    const d = new Date(dateString);
-    if (isNaN(d.getTime())) return "-";
-    const day = String(d.getDate()).padStart(2, "0");
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const year = d.getFullYear();
-    return `${day}/${month}/${year}`;
-  }
-
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-xl font-semibold">Data Work Experience</h1>
@@ -210,7 +199,7 @@ export default function WorkExperiencePage() {
           <thead className="bg-gray-100 dark:bg-gray-700">
             <tr>
               <th className="text-left px-4 py-2">No</th>
-              {["company", "role", "startDate", "endDate"].map((field) => (
+              {["company", "role", "startDate"].map((field) => (
                 <th
                   key={field}
                   className="text-left px-4 py-2 cursor-pointer"
@@ -241,11 +230,9 @@ export default function WorkExperiencePage() {
                 <td className="px-4 py-2">{(page - 1) * limit + index + 1}</td>
                 <td className="px-4 py-2">{item.company}</td>
                 <td className="px-4 py-2">{item.role}</td>
-                <td className="px-4 py-2">{formatDateDMY(item.startDate)}</td>
                 <td className="px-4 py-2">
-                  {item.endDate ? formatDateDMY(item.endDate) : "Present"}
+                  {new Date(item.startDate).toLocaleDateString()}
                 </td>
-
                 <td className="px-4 py-2 space-x-2">
                   <Button
                     variant="outline"
@@ -319,21 +306,13 @@ export default function WorkExperiencePage() {
 
       {deleting && (
         <Dialog open={!!deleting} onOpenChange={() => setDeleting(null)}>
-          <DialogContent
-            onInteractOutside={(e) => e.preventDefault()}
-            className="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
-          >
+          <DialogContent onInteractOutside={(e) => e.preventDefault()}>
             <DialogHeader>
-              <DialogTitle className="text-gray-900 dark:text-gray-100">
-                Hapus Data
-              </DialogTitle>
+              <DialogTitle>Hapus Data</DialogTitle>
             </DialogHeader>
-            <p className="mb-4">
+            <p>
               Yakin ingin menghapus pengalaman kerja di{" "}
-              <strong className="text-gray-900 dark:text-gray-100">
-                {deleting.company}
-              </strong>
-              ?
+              <strong>{deleting.company}</strong>?
             </p>
             <DialogFooter>
               <Button variant="outline" onClick={() => setDeleting(null)}>
@@ -349,109 +328,57 @@ export default function WorkExperiencePage() {
 
       {viewing && (
         <Dialog open={!!viewing} onOpenChange={() => setViewing(null)}>
-          <DialogContent
-            onInteractOutside={(e) => e.preventDefault()}
-            className="max-w-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200"
-          >
+          <DialogContent onInteractOutside={(e) => e.preventDefault()}>
             <DialogHeader>
               <DialogTitle>Detail Work Experience</DialogTitle>
             </DialogHeader>
-
-            <div className="space-y-6 text-sm">
-              {/* Logo Centered */}
-              {viewing.logoUrl && (
-                <div className="flex justify-center mb-4">
-                  <Image
-                    src={viewing.logoUrl}
-                    alt={`${viewing.company} logo`}
-                    width={96}
-                    height={96}
-                    className="object-contain rounded shadow-md"
-                  />
-                </div>
-              )}
-
-              {/* Info Grid */}
-              <div className="grid grid-cols-3 gap-x-6 gap-y-3">
-                <div>
-                  <strong className="text-gray-900 dark:text-gray-100">
-                    Company:
-                  </strong>
-                  <p className="mt-1">{viewing.company}</p>
-                </div>
-                <div>
-                  <strong className="text-gray-900 dark:text-gray-100">
-                    Role:
-                  </strong>
-                  <p className="mt-1">{viewing.role}</p>
-                </div>
-                <div>
-                  <strong className="text-gray-900 dark:text-gray-100">
-                    Location:
-                  </strong>
-                  <p className="mt-1">{viewing.location || "-"}</p>
-                </div>
-                <div>
-                  <strong className="text-gray-900 dark:text-gray-100">
-                    Start Date:
-                  </strong>
-                  <p className="mt-1">{formatDateDMY(viewing.startDate)}</p>
-                </div>
-
-                <div>
-                  <strong className="text-gray-900 dark:text-gray-100">
-                    End Date:
-                  </strong>
-                  <p className="mt-1">
-                    {viewing.endDate
-                      ? formatDateDMY(viewing.endDate)
-                      : "Present"}
-                  </p>
-                </div>
-                <div>
-                  <strong className="text-gray-900 dark:text-gray-100">
-                    Skills:
-                  </strong>
-                  <p className="mt-1">
-                    {viewing.skills.length > 0
-                      ? viewing.skills.map((s) => s.name).join(", ")
-                      : "-"}
-                  </p>
-                </div>
-              </div>
-
-              {/* Summary & Achievements */}
+            <div className="space-y-3 text-sm">
               <div>
-                <strong className="text-gray-900 dark:text-gray-100">
-                  Summary:
-                </strong>
-                {viewing.summary?.length ? (
-                  <ul className="list-disc list-inside mt-2 space-y-1">
-                    {viewing.summary.map((s, i) => (
-                      <li key={i}>{s}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="mt-1">-</p>
-                )}
+                <strong>Company:</strong> {viewing.company}
               </div>
-
               <div>
-                <strong className="text-gray-900 dark:text-gray-100">
-                  Achievements:
-                </strong>
-                {viewing.achievements?.length ? (
-                  <ul className="list-disc list-inside mt-2 space-y-1">
-                    {viewing.achievements.map((a, i) => (
-                      <li key={i}>{a}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="mt-1">-</p>
-                )}
+                <strong>Role:</strong> {viewing.role}
+              </div>
+              <div>
+                <strong>Location:</strong> {viewing.location || "-"}
+              </div>
+              <div>
+                <strong>Start Date:</strong>{" "}
+                {new Date(viewing.startDate).toLocaleDateString()}
+              </div>
+              <div>
+                <strong>End Date:</strong>{" "}
+                {viewing.endDate
+                  ? new Date(viewing.endDate).toLocaleDateString()
+                  : "Present"}
+              </div>
+              <div>
+                <strong>Skills:</strong>{" "}
+                {viewing.skills.length > 0
+                  ? viewing.skills.map((s) => s.name).join(", ")
+                  : "-"}
+              </div>
+              <div>
+                <strong>Summary:</strong>
+                <ul className="list-disc pl-4">
+                  {viewing.summary?.length ? (
+                    viewing.summary.map((s, i) => <li key={i}>{s}</li>)
+                  ) : (
+                    <li>-</li>
+                  )}
+                </ul>
+              </div>
+              <div>
+                <strong>Achievements:</strong>
+                <ul className="list-disc pl-4">
+                  {viewing.achievements?.length ? (
+                    viewing.achievements.map((a, i) => <li key={i}>{a}</li>)
+                  ) : (
+                    <li>-</li>
+                  )}
+                </ul>
               </div>
             </div>
-
             <DialogFooter>
               <Button variant="outline" onClick={() => setViewing(null)}>
                 Close
