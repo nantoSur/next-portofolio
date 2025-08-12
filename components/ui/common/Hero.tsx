@@ -8,7 +8,7 @@ export default function Hero({ data }: HeroProps) {
   const { title, highlight, description } = data;
 
   return (
-    <section className="w-full">
+    <section id="about" className="w-full">
       <div className="max-w-5xl mx-auto px-6 mt-16 text-left">
         {/* TITLE */}
         <h1 className="text-2xl md:text-3xl font-bold leading-snug mb-4 break-words">

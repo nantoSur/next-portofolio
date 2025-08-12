@@ -1,16 +1,47 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutDashboard, Sparkles, Briefcase, UserPlus } from "lucide-react";
+import {
+  LayoutDashboard,
+  Sparkles,
+  Briefcase,
+  UserPlus,
+  Layers,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 
 const menuItems = [
-  { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-  { label: "Hero", icon: Sparkles, href: "/dashboard/hero-section" },
-  { label: "Skills", icon: Briefcase, href: "/dashboard/skills" },
-  { label: "Works", icon: Briefcase, href: "/dashboard/work-experience" },
-  { label: "Users", icon: UserPlus, href: "/dashboard/users" },
+  {
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    href: "/dashboard",
+    color: "text-blue-500",
+  },
+  {
+    label: "Hero",
+    icon: Sparkles,
+    href: "/dashboard/hero-section",
+    color: "text-indigo-500",
+  },
+  {
+    label: "Skills",
+    icon: Layers,
+    href: "/dashboard/skills",
+    color: "text-purple-500",
+  },
+  {
+    label: "Works",
+    icon: Briefcase,
+    href: "/dashboard/work-experience",
+    color: "text-emerald-500",
+  },
+  {
+    label: "Users",
+    icon: UserPlus,
+    href: "/dashboard/users",
+    color: "text-rose-500",
+  },
 ];
 
 export default function Sidebar() {
@@ -21,7 +52,7 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="flex items-center gap-3 text-2xl font-bold text-gray-800 dark:text-white">
         <div className="bg-gray-100 dark:bg-gray-800 p-2 rounded-md">
-          <LayoutDashboard className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+          <LayoutDashboard className="w-6 h-6 text-blue-500" />
         </div>
         TailAdmin
       </div>
@@ -51,7 +82,7 @@ export default function Sidebar() {
             >
               <item.icon
                 className={clsx("w-5 h-5", {
-                  "text-gray-900 dark:text-white": isActive,
+                  [item.color]: isActive,
                   "text-gray-500 dark:text-gray-400": !isActive,
                 })}
               />

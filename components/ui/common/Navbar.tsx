@@ -8,7 +8,6 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const menuItems = [
-    { name: "HOME", path: "/" },
     { name: "WORK", path: "/#work" },
     { name: "RESUME", path: "/#resume" },
     { name: "ABOUT", path: "/#about" },
@@ -18,7 +17,11 @@ export default function Navbar() {
     <header className="w-full mt-10">
       <div className="max-w-3xl mx-auto flex justify-between items-center px-6 py-4">
         {/* Logo */}
-        <div className="text-lg font-bold tracking-wide">NANTO.</div>
+        <div className="text-lg font-bold tracking-wide">
+          <Link href="/" className="hover:opacity-80 transition">
+            NANTO.
+          </Link>
+        </div>
 
         {/* Menu */}
         <nav className="space-x-8 text-sm">

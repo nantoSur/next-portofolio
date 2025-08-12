@@ -21,3 +21,17 @@ export async function getHeroSection(): Promise<HeroSection | null> {
     throw new Error("Gagal mengambil data Hero Section");
   }
 }
+
+export async function countHeroSection(): Promise<number> {
+  try {
+    const result = await sql<{ count: number }[]>`
+      SELECT COUNT(*)::int AS count
+      FROM hero_section
+    `;
+
+    return result[0]?.count ?? 0;
+  } catch (err) {
+    console.error("❌ Gagal menghitung data Hero Section:", err);
+    throw new Error("Gagal menghitung data Hero Section");
+  }
+}
