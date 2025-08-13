@@ -1,5 +1,5 @@
 // lib/seed/createTableUsers.ts
-import { sql } from "../db";
+import { sql } from "../services/db";
 
 export async function createUsersTable() {
   await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;

@@ -7,8 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogClose,
-} from "@/components/ui/dashboard/dialog";
-import { Button } from "@/components/ui/dashboard/button";
+} from "@/components/ui/dashboard/primitives/dialog";
+import { Button } from "@/components/ui/dashboard/primitives/button";
 import type { HeroSection } from "@/lib/types/hero-section";
 import { updateHeroSection } from "@/lib/actions/hero-section/update";
 import { toast } from "sonner";

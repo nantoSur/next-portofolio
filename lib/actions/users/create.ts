@@ -1,10 +1,10 @@
 "use server";
 
-import { sql } from "@/lib/db";
+import { sql } from "@/lib/services/db";
 import type { User } from "@/lib/types/user";
 import bcrypt from "bcrypt";
 import { treeifyError } from "zod";
-import { DuplicateEmailError } from "@/lib/errors";
+import { DuplicateEmailError } from "@/lib/utils/errors";
 import { UserSchema } from "@/lib/validations/user-schema";
 
 export async function createUser(data: {

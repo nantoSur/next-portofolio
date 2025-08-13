@@ -1,7 +1,7 @@
 //lib/actions/work-experinces/get.ts
 "use server";
 
-import { sql } from "@/lib/db";
+import { sql } from "@/lib/services/db";
 import { WorkExperience } from "@/lib/types/work-experience";
 
 type GetWorkExperiencesParams = {

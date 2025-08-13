@@ -5,10 +5,10 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dashboard/dialog";
-import { Input } from "@/components/ui/dashboard/input";
-import { Label } from "@/components/ui/dashboard/label";
-import { Button } from "@/components/ui/dashboard/button";
+} from "@/components/ui/dashboard/primitives/dialog";
+import { Input } from "@/components/ui/dashboard/primitives/input";
+import { Label } from "@/components/ui/dashboard/primitives/label";
+import { Button } from "@/components/ui/dashboard/primitives/button";
 import { SkillTransferSelect } from "@/components/ui/dashboard/shared/SkillTransferSelect";
 
 import { useState, useEffect } from "react";

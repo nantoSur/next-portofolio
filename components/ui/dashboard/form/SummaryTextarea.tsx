@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Textarea } from "@/components/ui/dashboard/textarea";
-import { Label } from "@/components/ui/dashboard/label";
+import { Textarea } from "@/components/ui/dashboard/primitives/textarea";
+import { Label } from "@/components/ui/dashboard/primitives/label";
 
 interface SummaryTextareaProps {
   name: string;

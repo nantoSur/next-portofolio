@@ -1,7 +1,7 @@
 // lib/actions/skills/get.ts
 "use server";
 
-import { sql } from "@/lib/db";
+import { sql } from "@/lib/services/db";
 import type { Skill } from "@/lib/types/skill";
 
 export async function getSkills(): Promise<Skill[]> {

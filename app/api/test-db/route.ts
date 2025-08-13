@@ -1,5 +1,5 @@
 // app/api/test-db/route.ts
-import { sql } from "@/lib/db"; // pastikan path ini benar
+import { sql } from "@/lib/services/db"; // pastikan path ini benar
 
 export async function GET() {
   try {

@@ -4,7 +4,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/components/ui/dashboard/card";
+} from "@/components/ui/dashboard/primitives/card";
 import Link from "next/link";
 import { countHeroSection } from "@/lib/actions/hero-section/get";
 

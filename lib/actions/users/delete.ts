@@ -1,6 +1,6 @@
 "use server";
 
-import { sql } from "@/lib/db";
+import { sql } from "@/lib/services/db";
 
 export async function deleteUser(id: string) {
   try {

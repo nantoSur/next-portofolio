@@ -1,6 +1,6 @@
 // lib/actions/skills/create.ts
 "use server";
-import { sql } from "@/lib/db";
+import { sql } from "@/lib/services/db";
 
 export async function createSkill(name: string) {
   try {

@@ -6,16 +6,16 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from "@/components/ui/dashboard/select";
+} from "@/components/ui/dashboard/primitives/select";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dashboard/dialog";
-import { Button } from "@/components/ui/dashboard/button";
-import { Input } from "@/components/ui/dashboard/input";
+} from "@/components/ui/dashboard/primitives/dialog";
+import { Button } from "@/components/ui/dashboard/primitives/button";
+import { Input } from "@/components/ui/dashboard/primitives/input";
 import {
   PlusIcon,
   PencilIcon,

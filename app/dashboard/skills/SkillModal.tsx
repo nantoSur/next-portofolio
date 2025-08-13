@@ -7,9 +7,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogClose,
-} from "@/components/ui/dashboard/dialog";
-import { Input } from "@/components/ui/dashboard/input";
-import { Button } from "@/components/ui/dashboard/button";
+} from "@/components/ui/dashboard/primitives/dialog";
+import { Input } from "@/components/ui/dashboard/primitives/input";
+import { Button } from "@/components/ui/dashboard/primitives/button";
 
 interface SkillForm {
   id?: string;

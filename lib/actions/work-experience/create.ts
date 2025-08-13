@@ -1,6 +1,6 @@
 "use server";
 
-import { sql } from "@/lib/db";
+import { sql } from "@/lib/services/db";
 import { WorkExperienceForm } from "@/lib/types/work-experience";
 
 // 🔒 Utility untuk konversi string atau array menjadi string[]

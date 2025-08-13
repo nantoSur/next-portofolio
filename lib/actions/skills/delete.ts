@@ -1,7 +1,7 @@
 // lib/actions/skills/delete.ts
 "use server";
 
-import { sql } from "@/lib/db";
+import { sql } from "@/lib/services/db";
 
 export async function deleteSkill(id: string) {
   try {

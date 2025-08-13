@@ -9,8 +9,8 @@ import {
   updateWorkExperience,
   deleteWorkExperience,
 } from "@/lib/actions/work-experience";
-import { Button } from "@/components/ui/dashboard/button";
-import { Input } from "@/components/ui/dashboard/input";
+import { Button } from "@/components/ui/dashboard/primitives/button";
+import { Input } from "@/components/ui/dashboard/primitives/input";
 import {
   ChevronDown,
   ChevronUp,
@@ -20,20 +20,20 @@ import {
   EyeIcon,
 } from "lucide-react";
 import { toast } from "sonner";
-import { WorkExperienceModal } from "./work-experience-modal";
+import { WorkExperienceModal } from "./WorkExperienceModal";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from "@/components/ui/dashboard/select";
+} from "@/components/ui/dashboard/primitives/select";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dashboard/dialog";
+} from "@/components/ui/dashboard/primitives/dialog";
 
 import {
   type WorkExperienceForm,

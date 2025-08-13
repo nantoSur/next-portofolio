@@ -1,10 +1,10 @@
-import Hero from "../components/ui/common/Hero";
-import Footer from "../components/ui/common/Footer";
+import Hero from "../components/ui/common/sections/Hero";
+import Footer from "../components/ui/common/sections/Footer";
 // import WorkSection from "../components/ui/common/WorkSection";
-import ExperienceSection from "../components/ui/common/ExperienceSection";
+import ExperienceSection from "../components/ui/common/sections/ExperienceSection";
 // import ContactSection from "../components/ui/common/ContactSection";
-import Navbar from "../components/ui/common/Navbar";
-import ScrollToTopButton from "../components/ui/common/ScrollToTopButton";
+import Navbar from "../components/ui/common/widgets/Navbar";
+import ScrollToTopButton from "../components/ui/common/widgets/ScrollToTopButton";
 import { getHeroSection } from "@/lib/actions/hero-section/get";
 
 export default async function Home() {

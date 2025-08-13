@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "../button";
-import { Textarea } from "../textarea";
+import { Button } from "../primitives/button";
+import { Textarea } from "../primitives/textarea";
 import { X } from "lucide-react";
 
 interface ListInputProps {

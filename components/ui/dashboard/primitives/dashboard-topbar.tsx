@@ -1,19 +1,19 @@
 "use client";
 
-import { Input } from "@/components/ui/dashboard/input";
+import { Input } from "@/components/ui/dashboard/primitives/input";
 import { Bell, Lock, Settings, ChevronDown, LogOut } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dashboard/dropdown-menu";
+} from "@/components/ui/dashboard/primitives/dropdown-menu";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/dashboard/avatar";
-import { Button } from "@/components/ui/dashboard/button";
+} from "@/components/ui/dashboard/primitives/avatar";
+import { Button } from "@/components/ui/dashboard/primitives/button";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Sun, Moon } from "lucide-react";

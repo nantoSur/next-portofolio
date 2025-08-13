@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { getHeroSection } from "@/lib/actions/hero-section/get";
 import type { HeroSection } from "@/lib/types/hero-section";
-import { Card } from "@/components/ui/dashboard/card";
-import { Button } from "@/components/ui/dashboard/button";
+import { Card } from "@/components/ui/dashboard/primitives/card";
+import { Button } from "@/components/ui/dashboard/primitives/button";
 import { ReloadIcon, Pencil1Icon } from "@radix-ui/react-icons";
 import { toast } from "sonner";
 import { HeroSectionModal } from "./HeroSectionModal";

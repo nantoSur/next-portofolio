@@ -1,6 +1,6 @@
 "use server";
 
-import { sql } from "@/lib/db";
+import { sql } from "@/lib/services/db";
 import type { User } from "@/lib/types/user";
 
 // Get list users

@@ -1,8 +1,8 @@
 // app/dashboard/layout.tsx
 
 import { ReactNode } from "react";
-import Sidebar from "../../components/ui/dashboard/sidebar";
-import DashboardTopbar from "@/components/ui/dashboard/dashboard-topbar";
+import Sidebar from "../../components/ui/dashboard/primitives/sidebar";
+import DashboardTopbar from "@/components/ui/dashboard/primitives/dashboard-topbar";
 import { Toaster } from "sonner";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {

@@ -1,6 +1,6 @@
 "use server";
 
-import { sql } from "@/lib/db";
+import { sql } from "@/lib/services/db";
 import bcrypt from "bcrypt";
 import { treeifyError } from "zod";
 import { UpdateUserSchema } from "@/lib/validations/user-schema";

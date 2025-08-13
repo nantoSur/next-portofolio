@@ -1,6 +1,6 @@
 "use server";
 
-import { sql } from "@/lib/db";
+import { sql } from "@/lib/services/db";
 import { WorkExperienceForm } from "@/lib/types/work-experience";
 import { v4 as uuidv4 } from "uuid"; // Pastikan import ini sudah ada
 

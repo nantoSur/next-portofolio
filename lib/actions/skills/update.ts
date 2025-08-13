@@ -1,7 +1,7 @@
 // lib/actions/skills/update.ts
 "use server";
 
-import { sql } from "@/lib/db";
+import { sql } from "@/lib/services/db";
 import { SkillSchema } from "@/lib/validations/skill-schema";
 import { treeifyError } from "zod";
 

@@ -5,14 +5,14 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dashboard/dialog";
-import { Input } from "@/components/ui/dashboard/input";
-import { Label } from "@/components/ui/dashboard/label";
-import { Button } from "@/components/ui/dashboard/button";
+} from "@/components/ui/dashboard/primitives/dialog";
+import { Input } from "@/components/ui/dashboard/primitives/input";
+import { Label } from "@/components/ui/dashboard/primitives/label";
+import { Button } from "@/components/ui/dashboard/primitives/button";
 import { useState, useEffect } from "react";
 import { UserSchema } from "@/lib/validations/user-schema";
 import { z } from "zod";
-import { DuplicateEmailError } from "@/lib/errors";
+import { DuplicateEmailError } from "@/lib/utils/errors";
 import {
   CreateUserSchema,
   UpdateUserSchema,

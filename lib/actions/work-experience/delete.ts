@@ -1,5 +1,5 @@
 "use server";
-import { sql } from "@/lib/db";
+import { sql } from "@/lib/services/db";
 
 export async function deleteWorkExperience(id: string) {
   await sql`

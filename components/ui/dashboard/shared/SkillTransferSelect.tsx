@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/dashboard/button";
+import { Button } from "@/components/ui/dashboard/primitives/button";
 
 interface Option {
   label: string;

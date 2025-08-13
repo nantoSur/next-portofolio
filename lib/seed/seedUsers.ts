@@ -1,5 +1,5 @@
 // lib/seed/seedUsers.ts
-import { sql } from "../db";
+import { sql } from "../services/db";
 import bcrypt from "bcrypt";
 
 export async function seedUsers() {

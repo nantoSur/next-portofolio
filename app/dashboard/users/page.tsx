@@ -6,9 +6,9 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from "@/components/ui/dashboard/select";
-import { Button } from "@/components/ui/dashboard/button";
-import { Input } from "@/components/ui/dashboard/input";
+} from "@/components/ui/dashboard/primitives/select";
+import { Button } from "@/components/ui/dashboard/primitives/button";
+import { Input } from "@/components/ui/dashboard/primitives/input";
 import {
   PlusIcon,
   PencilIcon,
@@ -30,7 +30,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dashboard/dialog";
+} from "@/components/ui/dashboard/primitives/dialog";
 import { z } from "zod";
 import { UserSchema } from "@/lib/validations/user-schema";
 
