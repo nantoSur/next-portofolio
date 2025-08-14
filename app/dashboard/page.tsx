@@ -1,10 +1,5 @@
 //dashboard/page
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/dashboard/primitives/card";
+import { Card, CardTitle } from "@/components/ui/dashboard/primitives/card";
 import Link from "next/link";
 import { countHeroSection } from "@/lib/actions/hero-section/get";
 

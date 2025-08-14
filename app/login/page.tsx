@@ -36,7 +36,7 @@ export default function LoginPage() {
           .catch(() => ({ error: "Terjadi kesalahan" }));
         setError(data.error);
       }
-    } catch (err) {
+    } catch {
       setError("Terjadi kesalahan server");
     } finally {
       setLoading(false);
