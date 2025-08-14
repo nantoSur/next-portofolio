@@ -10,8 +10,9 @@ import {
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
+import { useEffect, useState } from "react";
 
-const menuItems = [
+const allMenuItems = [
   {
     label: "Dashboard",
     icon: LayoutDashboard,
@@ -46,6 +47,26 @@ const menuItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [menuItems, setMenuItems] = useState<typeof allMenuItems>([]);
+
+  useEffect(() => {
+    async function fetchUser() {
+      const res = await fetch("/api/current-user");
+      const data = await res.json();
+      const level = data.user?.level || "user";
+
+      // // 🔹 Tambahkan log untuk debug
+      // console.log("Current user data:", data);
+      // console.log("User level:", level);
+
+      if (level === "admin") {
+        setMenuItems(allMenuItems); // admin lihat semua menu
+      } else {
+        setMenuItems(allMenuItems.filter((item) => item.label === "Hero")); // user biasa hanya Hero
+      }
+    }
+    fetchUser();
+  }, []);
 
   return (
     <aside className="h-screen w-64 bg-white dark:bg-gray-900 border-r dark:border-gray-800 px-6 py-8 space-y-10">

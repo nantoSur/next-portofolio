@@ -1,11 +1,20 @@
-// app/dashboard/layout.tsx
-
 import { ReactNode } from "react";
-import Sidebar from "../../components/ui/dashboard/primitives/sidebar";
+import Sidebar from "@/components/ui/dashboard/primitives/sidebar";
 import DashboardTopbar from "@/components/ui/dashboard/primitives/dashboard-topbar";
 import { Toaster } from "sonner";
+import { redirect } from "next/navigation";
+import { getCurrentUser } from "@/lib/server/get-current-user";
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+interface DashboardLayoutProps {
+  children: ReactNode;
+}
+
+export default async function DashboardLayout({
+  children,
+}: DashboardLayoutProps) {
+  const user = await getCurrentUser(); // ✅ await karena async
+  if (!user) redirect("/login");
+
   return (
     <div className="flex h-screen">
       <Sidebar />

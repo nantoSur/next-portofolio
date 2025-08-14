@@ -1,6 +1,6 @@
 "use server";
 
-import { supabaseServer } from "@/lib/supabase-client";
+import { supabaseServer } from "@/lib/services/supabase-client";
 
 export async function uploadLogo(file: File) {
   const supabase = supabaseServer();

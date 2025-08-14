@@ -1,7 +1,13 @@
 "use client";
-
-import { Input } from "@/components/ui/dashboard/primitives/input";
-import { Bell, Lock, Settings, ChevronDown, LogOut } from "lucide-react";
+import {
+  Bell,
+  Lock,
+  Settings,
+  ChevronDown,
+  LogOut,
+  Sun,
+  Moon,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,12 +22,27 @@ import {
 import { Button } from "@/components/ui/dashboard/primitives/button";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { Sun, Moon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function DashboardTopbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+
   useEffect(() => setMounted(true), []);
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/logout", { method: "POST" });
+      if (res.ok) {
+        router.push("/login"); // redirect ke login setelah logout
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  };
 
   return (
     <div className="w-full flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 shadow-sm border-b">
@@ -78,11 +99,12 @@ export default function DashboardTopbar() {
               <ChevronDown className="w-4 h-4 text-muted-foreground" />
             </div>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent align="end">
             <DropdownMenuItem>
               <Settings className="w-4 h-4 mr-2" /> Settings
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut className="w-4 h-4 mr-2" /> Logout
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -16,7 +16,7 @@ import ListInput from "@/components/ui/dashboard/form/ListInput";
 import { WorkExperienceSchema } from "@/lib/validations/work-experience-schema";
 import type { WorkExperienceForm } from "@/lib/types/work-experience";
 import type { Skill } from "@/lib/types/skill";
-import { uploadLogo } from "@/lib/upload-logo"; // server action upload logo
+import { uploadLogo } from "@/lib/services/upload-logo"; // server action upload logo
 import Image from "next/image";
 interface Props {
   open: boolean;
