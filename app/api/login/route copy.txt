@@ -1,3 +1,4 @@
+//app/api/login/route
 import { sql } from "@/lib/services/db";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
@@ -7,12 +8,11 @@ import bcrypt from "bcrypt";
 interface LoginRequestBody {
   email: string;
   password: string;
-  token: string; // reCAPTCHA token
 }
 
 export async function POST(req: Request) {
   try {
-    const { email, password, token }: LoginRequestBody = await req.json();
+    const { email, password }: LoginRequestBody = await req.json();
 
     if (!email?.trim() || !password?.trim()) {
       return NextResponse.json(
@@ -21,61 +21,46 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!token) {
-      return NextResponse.json(
-        { error: "reCAPTCHA token tidak ditemukan" },
-        { status: 400 }
-      );
-    }
-
-    // ✅ Verifikasi token reCAPTCHA ke Google
-    const verifyRes = await fetch(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`,
-      { method: "POST" }
-    );
-    const verifyData = await verifyRes.json();
-
-    if (!verifyData.success) {
-      return NextResponse.json(
-        { error: "Gagal verifikasi reCAPTCHA" },
-        { status: 400 }
-      );
-    }
-
-    // ✅ Cek user & password
     const result = await sql`
       SELECT id, email, password, level
       FROM users
       WHERE email = ${email}
       LIMIT 1
     `;
+
     const user = result[0];
-    if (!user)
+    if (!user) {
       return NextResponse.json(
         { error: "User tidak ditemukan" },
         { status: 404 }
       );
+    }
 
     const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword)
+    if (!validPassword) {
       return NextResponse.json({ error: "Password salah" }, { status: 401 });
+    }
 
     const secret = process.env.JWT_SECRET;
     if (!secret) throw new Error("JWT_SECRET belum di-set di .env.local");
 
-    const tokenJWT = jwt.sign(
-      { id: user.id, email: user.email, level: user.level },
+    // const token = jwt.sign({ id: user.id, email: user.email }, secret, {
+    //   expiresIn: "1d",
+    // });
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, level: user.level }, // <-- pastikan ada level
       secret,
       { expiresIn: "1d" }
     );
 
-    // Simpan cookie httpOnly
+    // Simpan cookie httpOnly, path "/", maxAge 1 hari
     const cookieStore = await cookies();
     cookieStore.set({
       name: "token",
-      value: tokenJWT,
+      value: token,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production", // localhost = false
       path: "/",
       maxAge: 60 * 60 * 24,
       sameSite: "strict",

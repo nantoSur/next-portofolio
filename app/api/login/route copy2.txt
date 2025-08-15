@@ -1,3 +1,4 @@
+// app/api/login/route.ts
 import { sql } from "@/lib/services/db";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
@@ -7,13 +8,15 @@ import bcrypt from "bcrypt";
 interface LoginRequestBody {
   email: string;
   password: string;
-  token: string; // reCAPTCHA token
+  recaptchaToken: string;
 }
 
 export async function POST(req: Request) {
   try {
-    const { email, password, token }: LoginRequestBody = await req.json();
+    const { email, password, recaptchaToken }: LoginRequestBody =
+      await req.json();
 
+    // 1️⃣ Cek input awal
     if (!email?.trim() || !password?.trim()) {
       return NextResponse.json(
         { error: "Email dan password wajib diisi" },
@@ -21,28 +24,25 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!token) {
-      return NextResponse.json(
-        { error: "reCAPTCHA token tidak ditemukan" },
-        { status: 400 }
-      );
-    }
-
-    // ✅ Verifikasi token reCAPTCHA ke Google
+    // 2️⃣ Verifikasi reCAPTCHA
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
     const verifyRes = await fetch(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`,
-      { method: "POST" }
+      `https://www.google.com/recaptcha/api/siteverify`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `secret=${secretKey}&response=${recaptchaToken}`,
+      }
     );
     const verifyData = await verifyRes.json();
-
-    if (!verifyData.success) {
+    if (!verifyData.success || verifyData.score < 0.5) {
       return NextResponse.json(
-        { error: "Gagal verifikasi reCAPTCHA" },
+        { error: "Verifikasi reCAPTCHA gagal" },
         { status: 400 }
       );
     }
 
-    // ✅ Cek user & password
+    // 3️⃣ Cari user
     const result = await sql`
       SELECT id, email, password, level
       FROM users
@@ -50,30 +50,37 @@ export async function POST(req: Request) {
       LIMIT 1
     `;
     const user = result[0];
-    if (!user)
+    if (!user) {
       return NextResponse.json(
-        { error: "User tidak ditemukan" },
+        { field: "email", error: "User tidak ditemukan" },
         { status: 404 }
       );
+    }
 
+    // 4️⃣ Cek password
     const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword)
-      return NextResponse.json({ error: "Password salah" }, { status: 401 });
+    if (!validPassword) {
+      return NextResponse.json(
+        { field: "password", error: "Password salah" },
+        { status: 401 }
+      );
+    }
 
+    // 5️⃣ Buat token JWT
     const secret = process.env.JWT_SECRET;
     if (!secret) throw new Error("JWT_SECRET belum di-set di .env.local");
 
-    const tokenJWT = jwt.sign(
+    const token = jwt.sign(
       { id: user.id, email: user.email, level: user.level },
       secret,
       { expiresIn: "1d" }
     );
 
-    // Simpan cookie httpOnly
+    // 6️⃣ Simpan cookie
     const cookieStore = await cookies();
     cookieStore.set({
       name: "token",
-      value: tokenJWT,
+      value: token,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
